@@ -13,7 +13,7 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.decomposition import TruncatedSVD
 
-
+from sklearn.metrics import jaccard_score, average_precision_score
 
 
 
@@ -77,7 +77,15 @@ def tm_append_title_body_test_train(X_title_train, X_body_train, X_title_test, X
     return X_train, X_test
 
 def tm_load_train_test_set(output_dir, option="append"):
-    if option =="append" : 
+
+    if option =="raw_corpus" : 
+        
+        X_corpus_train = np.load(f"{output_dir}X_corpus_train.npy", allow_pickle=True)
+        X_corpus_test = np.load(f"{output_dir}X_corpus_test.npy", allow_pickle=True)
+        
+        return X_corpus_train, X_corpus_test
+
+    elif option =="append" : 
         X_title_train = np.load(f"{output_dir}X_title_train.npy", allow_pickle=True)
         X_body_train = np.load(f"{output_dir}X_body_train.npy", allow_pickle=True)
 
@@ -88,6 +96,39 @@ def tm_load_train_test_set(output_dir, option="append"):
         y_test = np.load(f"{output_dir}y_test.npy", allow_pickle=True)
         
         X_train, X_test = tm_append_title_body_test_train(X_title_train, X_body_train, X_title_test, X_body_test)
+    
     return  X_train, X_test, y_train, y_test
 
+def tm_get_label_list(output_dir):
+    return np.load(f"{output_dir}/label_list.npy", allow_pickle=True)
 
+def tm_get_subset(X_train, y_train) : 
+    size_train = len(X_train) // 4 
+    return X_train[:size_train],  y_train[:size_train]
+
+
+# Threshold test 
+
+def tm_test_threshold(y_train_b, y_pred) : 
+    config = {"threshold" : [],
+                "precision" : [], 
+                "jaccard" : []
+                }
+    thr = np.arange(-9,0.2,0.2)
+    test_thr = 10**thr
+    for t in test_thr : 
+        y_pred_t = (y_pred > t ).astype(np.float32)
+        prec      = average_precision_score(y_train_b, y_pred_t, average='micro')
+        jacc = jaccard_score(y_train_b, y_pred_t, average='micro')
+        
+        config["threshold"].append(t)
+        config["precision"].append(prec)
+        config["jaccard"].append(jacc)
+    return pd.DataFrame(config)
+
+def tm_plot_threshold_test(threshold_test): 
+    plt.plot(threshold_test["threshold"], threshold_test["precision"],label="precsion")
+    plt.plot(threshold_test["threshold"], threshold_test["jaccard"],label="jaccard_score")
+    plt.xlabel("Decision threshold")
+    plt.legend()
+    plt.show()
