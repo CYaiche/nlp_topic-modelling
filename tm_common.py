@@ -106,6 +106,11 @@ def tm_get_subset(X_train, y_train) :
     size_train = len(X_train) // 4 
     return X_train[:size_train],  y_train[:size_train]
 
+def tm_multilabel_binarizer(y_train, y_test) : 
+    mlb = MultiLabelBinarizer()
+    y_train_b = mlb.fit_transform(y_train)
+    y_test_b = mlb.transform(y_test)
+    return y_train_b, y_test_b
 
 # Threshold test 
 
