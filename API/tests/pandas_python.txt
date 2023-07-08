@@ -1,0 +1,17 @@
+How to make good reproducible pandas examples
+
+This question's answers are a community effort. Edit existing answers to improve this post. It is not currently accepting new answers or interactions.
+Having spent a decent amount of time watching both the r and pandas tags on SO, the impression that I get is that pandas questions are less likely to contain reproducible data. This is something that the R community has been pretty good about encouraging, and thanks to guides like this, newcomers are able to get some help on putting together these examples. People who are able to read these guides and come back with reproducible data will often have much better luck getting answers to their questions.
+
+How can we create good reproducible examples for pandas questions? Simple dataframes can be put together, e.g.:
+
+import pandas as pd
+df = pd.DataFrame({'user': ['Bob', 'Jane', 'Alice'], 
+                   'income': [40000, 50000, 42000]})
+But many example datasets need more complicated structure, e.g.:
+
+datetime indices or data
+Multiple categorical variables (is there an equivalent to R's expand.grid() function, which produces all possible combinations of some given variables?)
+MultiIndex or Panel data
+For datasets that are hard to mock up using a few lines of code, is there an equivalent to R's dput() that allows you to generate copy-pasteable code to regenerate your datastructure?
+

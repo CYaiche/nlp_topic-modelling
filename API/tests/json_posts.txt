@@ -1,0 +1,16 @@
+How to extract and access data from JSON with PHP?
+
+This is intended to be a general reference question and answer covering many of the never-ending "How do I access data in my JSON?" questions. It is here to handle the broad basics of decoding JSON in PHP and accessing the results.
+
+I have the JSON:
+
+{
+    "type": "donut",
+    "name": "Cake",
+    "toppings": [
+        { "id": "5002", "type": "Glazed" },
+        { "id": "5006", "type": "Chocolate with Sprinkles" },
+        { "id": "5004", "type": "Maple" }
+    ]
+}
+How do I decode this in PHP and access the resulting data?
