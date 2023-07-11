@@ -53,6 +53,7 @@ def get_optimum_threshold(y_train_b, y_pred) :
 if __name__ == "__main__" : 
     output_dir = 'C:\dev\\topic_modelling\output\\'
     model_path = 'C:\dev\\topic_modelling\API\model\\tm_use.keras'
+    threshold_path = 'C:\dev\\topic_modelling\API\model\\best_t.npy'
     BATCH_SIZE = 128
     EPOCH = 100
     exp_id = 1 
@@ -106,11 +107,14 @@ if __name__ == "__main__" :
         y_pred = use_model.predict(X_train_use_embedding[:100])
         best_t = get_optimum_threshold(y_train_b[:100], y_pred) 
         print("[USE TRAIN] Decision threshold : ",best_t)
+        print("[USE TRAIN] Saving best threshold .... ")
+        np.save(threshold_path, best_t)
         print("[USE TRAIN] Model trained")
         
         print("[USE TRAIN] Evaluation .... ")
         y_pred_use = use_model.predict(X_test_use_embedding)
         y_pred_use = (y_pred_use > best_t).astype(np.float32)
+        
         
         precision_use      = average_precision_score(y_test_b, y_pred_use, average='micro')
         jaccard_score_use = jaccard_score(y_test_b, y_pred_use, average='micro')
