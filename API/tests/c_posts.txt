@@ -1,5 +1,3 @@
-27029
-
 In this C++ code, sorting the data (before the timed region) makes the primary loop ~6x faster:
 
 #include <algorithm>

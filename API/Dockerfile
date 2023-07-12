@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY  front.py .
 COPY  predict.py . 
-COPY  model /model
+COPY  model model
 COPY  requirements.txt requirements.txt
 
 RUN pip install -r requirements.txt

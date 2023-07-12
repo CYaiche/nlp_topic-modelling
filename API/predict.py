@@ -10,16 +10,23 @@ class TopicModellingModel :
         threshold_path = os.path.join(dir_name,'model/best_t.npy')
         label_list = os.path.join(dir_name,'model/label_list.npy')
         model_path = os.path.join(dir_name,'model/tm_use.keras')
-                
+
+        assert (
+            os.path.exists(threshold_path)
+            and os.path.exists(label_list)
+            and os.path.exists(model_path)
+        ), "model files not existent"
+
+
         use_encoder = "https://tfhub.dev/google/universal-sentence-encoder/4"
         print("[USE inference] Load use embedding")
         self.embed = hub.load(use_encoder)
         print("[USE INFERENCE] done")
-        
+
         print("[USE INFERENCE] Load classification model")
         self.model = keras.models.load_model(model_path)
         print("[USE INFERENCE] done")
-        
+
         print("[USE INFERENCE] Load threshold and label")
         self.best_t = np.load(threshold_path)
         self.labels = np.load(label_list, allow_pickle=True)

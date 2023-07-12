@@ -21,7 +21,7 @@ def get_data_sets(output_dir):
     _, _, y_train, y_test = tm_load_train_test_set(output_dir)
 
     X_corpus_train, X_corpus_test = tm_load_train_test_set(output_dir, option="raw_corpus")
-    for i in range(3) : 
+    for i in range(3): 
         X_corpus_train, y_train = tm_get_subset(X_corpus_train, y_train)
         X_corpus_test, y_test = tm_get_subset(X_corpus_test, y_test)
 
