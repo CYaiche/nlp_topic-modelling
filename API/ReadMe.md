@@ -2,6 +2,7 @@
 ## Build docker image
 docker build -t <\image name> .
 
+tutorial : [here](https://towardsdatascience.com/deploy-machine-learning-web-app-on-azure-df7c2faa7fec)
 
 ##  lists docker images 
 docker images
@@ -27,3 +28,11 @@ docker rmi <\image-id>
 
 # view in html 
 http://localhost:8501
+
+## Azur 
+
+azur CLI to use azur service with command line on the terminal 
+
+azur login 
+
+azur group list #  list all resource group 
