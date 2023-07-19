@@ -1,3 +1,4 @@
-[submodule "api_topic_modelling"]
-	path = api_topic_modelling
+[submodule "api"]
+	path = api
 	url = https://github.com/CYaiche/api_topic_modelling.git
+	branch = deploy_1 
