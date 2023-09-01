@@ -14,16 +14,16 @@ from sklearn.multioutput import MultiOutputClassifier
 from sklearn.decomposition import TruncatedSVD
 
 from sklearn.metrics import jaccard_score, average_precision_score
-
+from sklearn.metrics import multilabel_confusion_matrix, ConfusionMatrixDisplay
 
 
 ## Preprocessing and dimension reduction : TF-IDF and LSA
 def getTDF(corpus, dic ):
-    """ retrun Term Document Frequency"""
+    """ return Term Document Frequency"""
     return  [ dic.doc2bow(text) for text in corpus]
 
 def tfidf_to_xsparse(tfidf_in, nb_lines, nb_cols):
-    """Convert the TF-IDF corpus into a sparse matrix"""
+    """ Convert the TF-IDF corpus into a sparse matrix"""
     rows, cols, data = [], [], []
     for i, doc in enumerate(tfidf_in):
         for j, value in doc:
@@ -56,7 +56,7 @@ def tfidf_lsa_preprocessing(X_train, X_test):
 
 
 def tm_get_working_config():
-    """ get boolean value for running on colab or not, return working directory"""
+    """ returns boolean value "if running on colab" and working directory"""
     try:
         from google.colab import drive
         drive.mount('/content/drive')
@@ -70,6 +70,8 @@ def tm_get_working_config():
     return IN_COLAB, output_dir
 
 def tm_append_title_body_test_train(X_title_train, X_body_train, X_title_test, X_body_test) : 
+    """ concatenates title and body posts both for train and test set
+    """
     X_train = [
         np.append(X_title_train[i], X_body_train[i]) for i in range(len(X_title_train))
     ]
@@ -77,7 +79,8 @@ def tm_append_title_body_test_train(X_title_train, X_body_train, X_title_test, X
     return X_train, X_test
 
 def tm_load_train_test_set(output_dir, option="append"):
-
+    """ returns train test set
+    """
     if option =="raw_corpus" : 
         
         X_corpus_train = np.load(f"{output_dir}X_corpus_train.npy", allow_pickle=True)
@@ -103,18 +106,27 @@ def tm_get_label_list(output_dir):
     return np.load(f"{output_dir}/label_list.npy", allow_pickle=True)
 
 def tm_get_subset(X_train, y_train) : 
+    """ to work on a subset of train test set, here 25 % """
     size_train = len(X_train) // 4 
     return X_train[:size_train],  y_train[:size_train]
 
+def tm_get_subsetX(X_train) : 
+    """ to work on a subset of train test set, here 25 % """
+    size_train = len(X_train) // 4 
+    return X_train[:size_train]
+
 def tm_multilabel_binarizer(y_train, y_test) : 
+    " multi-labels to hot-encoding like target"
     mlb = MultiLabelBinarizer()
     y_train_b = mlb.fit_transform(y_train)
     y_test_b = mlb.transform(y_test)
     return y_train_b, y_test_b
 
-# Threshold test 
+
+# ********************** Thresholds ******************* #
 
 def tm_test_threshold(y_train_b, y_pred) : 
+    """ test different threshold to convert probability output into class membership decision """
     config = {"threshold" : [],
                 "precision" : [], 
                 "jaccard" : []
@@ -132,8 +144,28 @@ def tm_test_threshold(y_train_b, y_pred) :
     return pd.DataFrame(config)
 
 def tm_plot_threshold_test(threshold_test): 
+    """ plots different threshold and precision """
     plt.plot(threshold_test["threshold"], threshold_test["precision"],label="precsion")
     plt.plot(threshold_test["threshold"], threshold_test["jaccard"],label="jaccard_score")
     plt.xlabel("Decision threshold")
     plt.legend()
     plt.show()
+    
+def plot_confusion_matrix(y_test, y_pred, label_list, NB_LABEL=3):
+    fig, axs = plt.subplots(1, NB_LABEL, figsize=(NB_LABEL * 10, 10))
+    for i in range(NB_LABEL):
+        rdm_label = i * 5
+        cm = multilabel_confusion_matrix(y_test, y_pred)[rdm_label]
+
+        display_labels = ["others", label_list[rdm_label]]
+        disp = ConfusionMatrixDisplay(
+            confusion_matrix=cm, display_labels=display_labels
+        )
+        disp.plot(ax=axs[i], colorbar=False)
+        disp.figure_.tight_layout()
+    plt.rc('font', size=30)
+    plt.show()
+    
+    
+    
+    # plt.rc('font', size=14)
